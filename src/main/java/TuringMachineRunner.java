@@ -1,19 +1,54 @@
-import java.util.HashMap;
+import javax.swing.*;
+import java.io.*;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * @author Dmitry Tsydzik
  * @since Date: 11.06.2014
  */
 public class TuringMachineRunner {
-    public static void main(String[] args) {
-        Map<TransitionKey, TransitionValue> rules = new HashMap<>();
 
-        Strip<Character> strip = new StringBuilderBasedStrip("#01#");
-        TuringMachine turingMachine = new TuringMachine(strip, "q1", rules);
+    private static File openRulesFile() {
+        JFileChooser fileChooser = new JFileChooser(".");
+        switch (fileChooser.showOpenDialog(null)) {
+            case JFileChooser.APPROVE_OPTION:
+                return fileChooser.getSelectedFile();
+            default:
+                return null;
+        }
+    }
+
+    private static Map<TransitionKey, TransitionValue> readRules() throws IOException {
+        File file;
         do {
-//            TransitionValue transitionValue = turingMachine.doStep();
-            System.out.println(strip);
+            file = openRulesFile();
+        } while (file == null);
+
+        try (Reader reader = new FileReader(file)) {
+            return new RulesParser().parseRules(reader);
+        }
+    }
+
+    private static String readInputString() {
+        System.out.println("enter string");
+        try (Scanner scanner = new Scanner(System.in)) {
+            return scanner.nextLine();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        Map<TransitionKey, TransitionValue> rules = readRules();
+        String inputString = readInputString();
+
+        Strip<Character> strip = new StringBuilderBasedStrip(inputString);
+        TuringMachine turingMachine = new TuringMachine(strip, "q1", rules);
+        int currentStep = 0;
+        do {
+            TransitionValue transitionValue = turingMachine.doStep();
+            System.out.printf("step #%d%n", currentStep++);
+            System.out.println("new value: " + strip);
+            System.out.println("new state: " + transitionValue.getNewState());
         } while (!turingMachine.isStopped());
     }
 }
