@@ -39,6 +39,12 @@ public class StringBuilderBasedStrip implements Strip<Character> {
 
     @Override
     public String toString() {
-        return stringBuilder.toString();
+        StringBuilder result = new StringBuilder(stringBuilder);
+        result.append("\n");
+        for (int i = 0; i < position; i++) {
+            result.append(' ');
+        }
+        result.append('^');
+        return result.toString();
     }
 }

@@ -39,6 +39,9 @@ public class TuringMachine {
                 break;
             case RIGHT:
                 strip.moveRight();
+                break;
+            default:
+                //do nothing
         }
         return result;
     }

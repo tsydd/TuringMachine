@@ -47,8 +47,9 @@ public class TuringMachineRunner {
         do {
             TransitionValue transitionValue = turingMachine.doStep();
             System.out.printf("step #%d%n", currentStep++);
-            System.out.println("new value: " + strip);
+            System.out.println(strip);
             System.out.println("new state: " + transitionValue.getNewState());
+            System.out.println();
         } while (!turingMachine.isStopped());
     }
 }
