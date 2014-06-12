@@ -37,19 +37,29 @@ public class TuringMachineRunner {
         }
     }
 
+    private static void printState(Strip<Character> strip, String state) {
+
+        System.out.println(strip);
+        System.out.println("state: " + state);
+        System.out.println();
+    }
+
     public static void main(String[] args) throws IOException {
         Map<TransitionKey, TransitionValue> rules = readRules();
         String inputString = readInputString();
 
         Strip<Character> strip = new StringBuilderBasedStrip(inputString);
-        TuringMachine turingMachine = new TuringMachine(strip, "q1", rules);
+        String state = "q1";
+        TuringMachine turingMachine = new TuringMachine(strip, state, rules);
         int currentStep = 0;
+        TransitionValue transitionValue;
         do {
-            TransitionValue transitionValue = turingMachine.doStep();
             System.out.printf("step #%d%n", currentStep++);
-            System.out.println(strip);
-            System.out.println("new state: " + transitionValue.getNewState());
-            System.out.println();
+            printState(strip, state);
+            transitionValue = turingMachine.doStep();
+            state = transitionValue.getNewState();
         } while (!turingMachine.isStopped());
+        System.out.println("result:");
+        printState(strip, state);
     }
 }
